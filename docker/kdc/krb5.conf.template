@@ -1,0 +1,21 @@
+[logging]
+  default = FILE:/tmp/krb5libs.log
+  kdc = FILE:/var/log/krb5kdc.log
+  admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+  default_realm = HADOOP.LOCAL
+  dns_lookup_realm = false
+  dns_lookup_kdc = false
+  ticket_lifetime = 24h
+  renew_lifetime = 7d
+  max_life = 12h 0m 0s
+  forwardable = true
+  udp_preference_limit = 1
+
+[realms]
+  HADOOP.LOCAL = {
+    kdc = __KDC_IP__:88
+    admin_server = __KDC_IP__:749
+    default_domain = HADOOP.LOCAL
+  }
