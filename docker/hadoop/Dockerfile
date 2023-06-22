@@ -28,6 +28,7 @@ RUN curl -L https://dlcdn.apache.org/hadoop/common/hadoop-3.3.5/hadoop-3.3.5.tar
     && mv /opt/hadoop-3.3.5 /opt/hadoop
 ENV HADOOP_HOME=/opt/hadoop
 ENV PATH=$HADOOP_HOME/bin:$PATH
+ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 
 ARG HDFS_UID
@@ -40,6 +41,8 @@ COPY init.sh /init.sh
 COPY ssh /root/.ssh
 COPY ssh /home/hdfs/.ssh
 RUN chown -R hdfs:hdfs /home/hdfs/.ssh
+
+COPY limits-nproc.conf /etc/security/limits.d/20-nproc.conf
 
 RUN ln -sf /etc/krb5/krb5.conf /etc/krb5.conf
 
