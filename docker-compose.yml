@@ -37,6 +37,12 @@ services:
   hadoop4:
     <<: *hadoop
     hostname: hadoop4
+  hadoop5:
+    <<: *hadoop
+    hostname: hadoop5
+  hadoop6:
+    <<: *hadoop
+    hostname: hadoop6
 
 volumes:
   zookeeper-data:

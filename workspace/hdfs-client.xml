@@ -1,0 +1,88 @@
+<configuration>
+  <property>
+     <name>fs.defaultFS</name>
+     <value>hdfs://ns1</value>
+  </property>
+
+  <!-- Enable kerberos auth -->
+  <property>
+  <name>hadoop.security.authentication</name>
+    <value>kerberos</value>
+  </property>
+  <property>
+    <name>hadoop.security.authorization</name>
+    <value>true</value>
+  </property>
+
+  <!-- HA -->
+  <property>
+    <name>dfs.nameservices</name>
+    <value>ns1,ns2</value>
+  </property>
+  <property>
+    <name>dfs.ha.namenodes.ns1</name>
+    <value>nn1,nn2</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.ns1.nn1</name>
+    <value>hadoop1:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.ns1.nn1</name>
+    <value>hadoop1:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.ns1.nn2</name>
+    <value>hadoop2:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.ns1.nn2</name>
+    <value>hadoop2:9870</value>
+  </property>
+  <property>
+    <name>dfs.client.failover.proxy.provider.ns1</name>
+    <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  </property>
+
+  <property>
+    <name>dfs.ha.namenodes.ns2</name>
+    <value>nn3,nn4</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.ns2.nn3</name>
+    <value>hadoop3:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.ns2.nn3</name>
+    <value>hadoop3:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.ns2.nn4</name>
+    <value>hadoop4:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.ns2.nn4</name>
+    <value>hadoop4:9870</value>
+  </property>
+  <property>
+    <name>dfs.client.failover.proxy.provider.ns2</name>
+    <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  </property>
+
+  <property>
+    <name>dfs.ha.namenodes.rbf</name>
+    <value>r5,r6</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.rbf.r5</name>
+    <value>hadoop5:8888</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.rbf.r6</name>
+    <value>hadoop6:8888</value>
+  </property>
+  <property>
+    <name>dfs.client.failover.proxy.provider.rbf</name>
+    <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  </property>
+</configuration>
