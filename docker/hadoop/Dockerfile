@@ -24,8 +24,9 @@ RUN echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 RUN yum -y install apache-commons-daemon-jsvc
 
 # hadoop
-RUN curl -L https://dlcdn.apache.org/hadoop/common/hadoop-3.3.5/hadoop-3.3.5.tar.gz | tar -zx -f- -C /opt \
-    && mv /opt/hadoop-3.3.5 /opt/hadoop
+ENV HADOOP_VERSION=3.3.4
+RUN curl -L https://dlcdn.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz | tar -zx -f- -C /opt \
+    && mv /opt/hadoop-$HADOOP_VERSION /opt/hadoop
 ENV HADOOP_HOME=/opt/hadoop
 ENV PATH=$HADOOP_HOME/bin:$PATH
 ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
