@@ -1,9 +1,14 @@
-# Build Options
 override VELOX_REPO_DEFAULT:=ep/build-velox/build/velox_ep
 VELOX_REPO  = $(VELOX_REPO_DEFAULT)
 BUILD_TYPE  = Debug
-SKIP_MAVEN  = y
 JAR_PACKAGE = package/target/gluten-velox-bundle-spark3.3_2.12-centos_7-0.5.0-SNAPSHOT.jar
+
+# Build Options
+SKIP_MAVEN  = y
+ENABLE_TEST = n
+ENABLE_BENCHMARK = n
+filter-bool = $(eval $1 := $(filter y Y true True on ON,$($1)))
+$(foreach v,SKIP_MAVEN ENABLE_TEST ENABLE_BENCHMARK,$(call filter-bool,$(v)))
 
 # Alias
 .PHONY: all clean
@@ -34,8 +39,8 @@ cpp/build:
 		-DVELOX_HOME=$(abspath $(VELOX_REPO)) \
 		-DBUILD_VELOX_BACKEND=ON \
 		-DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
-      	-DBUILD_TESTS=ON \
-		-DBUILD_BENCHMARKS=ON \
+      	-DBUILD_TESTS=$(if $(ENABLE_TEST),ON,OFF) \
+		-DBUILD_BENCHMARKS=$(if $(ENABLE_BENCHMARK),ON,OFF) \
 		-DBUILD_JEMALLOC=ON \
       	-DENABLE_HBM=OFF \
 		-DENABLE_QAT=OFF \
@@ -56,12 +61,13 @@ build-velox: $(VELOX_REPO) build-arrow
 # Force rebuild velox without cleanup
 ifneq "$(VELOX_REPO)" "$(VELOX_REPO_DEFAULT)"
 	-rm $(VELOX_REPO_DEFAULT)/../velox-commit.cache
+	mkdir -p $(VELOX_REPO_DEFAULT)
 endif
 	./ep/build-velox/src/build_velox.sh \
 		--velox_home="$(abspath $(VELOX_REPO))" \
 		--enable_s3=ON \
 		--enable_hdfs=ON \
-		--build_benchmarks=ON \
+		--build_benchmarks=$(if $(ENABLE_BENCHMARK),ON,OFF) \
 		--build_type="$(BUILD_TYPE)" \
 		--enable_ep_cache=ON
 clean-velox: $(VELOX_REPO)

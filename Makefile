@@ -18,9 +18,9 @@ hadoop1:
 # Gluten Builder
 #
 
-GLUTEN_REPO = $(error "GLUTEN_REPO is required")
+GLUTEN_REPO = ../gluten
 override GLUTEN_REPO := $(abspath $(GLUTEN_REPO))
-VELOX_REPO  =
+VELOX_REPO  = ../velox
 
 # Host Cache Dirs
 CCACHE_DIR=$(HOME)/.ccache
@@ -30,7 +30,7 @@ MAVEN_M2_DIR=$(HOME)/.m2
 # Docker Builder
 DOCKER_BUILDER_IMAGE     = gluten-builder-vcpkg
 DOCKER_MOUNT_DIRS        = $(GLUTEN_REPO) $(VCPKG_BINARY_CACHE_DIR) $(MAVEN_M2_DIR) $(CCACHE_DIR)
-DOCKER_BUILDER_RUN_FLAGS = \
+DOCKER_BUILDER_RUN_FLAGS = $(DOCKER_RUN_FLAGS) \
 	-v $(GLUTEN_REPO):$(GLUTEN_REPO) \
 	-v $(VCPKG_BINARY_CACHE_DIR):/home/build/.cache/vcpkg \
 	-v $(MAVEN_M2_DIR):/home/build/.m2 \
@@ -48,7 +48,7 @@ endif
 .PHONY: builder builder-image
 builder: builder-image $(DOCKER_MOUNT_DIRS)
 	$(DOCKER_BUILDER_SHELL) bash 
-builder-image:
+builder-image: $(GLUTEN_REPO)
 	cd $(GLUTEN_REPO)/dev/vcpkg && docker build \
 		--file docker/Dockerfile \
 		--build-arg BUILDER_UID=`id -u` \
