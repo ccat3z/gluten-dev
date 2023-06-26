@@ -1,7 +1,7 @@
 # Build Options
 override VELOX_REPO_DEFAULT:=ep/build-velox/build/velox_ep
 VELOX_REPO  = $(VELOX_REPO_DEFAULT)
-BUILD_TYPE  = Release
+BUILD_TYPE  = Debug
 SKIP_MAVEN  = y
 JAR_PACKAGE = package/target/gluten-velox-bundle-spark3.3_2.12-centos_7-0.5.0-SNAPSHOT.jar
 
@@ -19,7 +19,7 @@ endif
 ifeq (y,$(SKIP_MAVEN))
 .PHONY: $(JAR_PACKAGE)
 $(JAR_PACKAGE): build-gluten-velox
-	cd cpp/build/releases && jar -uf "$(JAR_PACKAGE)" libvelox.so libgluten.so
+	cd cpp/build/releases && jar -uf "$(abspath $(JAR_PACKAGE))" libvelox.so libgluten.so
 else
 $(JAR_PACKAGE): build-gluten-velox
 	mvn clean package -Pbackends-velox -Prss -Pspark-3.3 -DskipTests
@@ -31,6 +31,7 @@ endif
 cpp/build:
 	cmake \
 		"-B$@" \
+		-DVELOX_HOME=$(abspath $(VELOX_REPO)) \
 		-DBUILD_VELOX_BACKEND=ON \
 		-DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
       	-DBUILD_TESTS=ON \
@@ -52,6 +53,10 @@ clean-gluten-velox:
 $(VELOX_REPO_DEFAULT):
 	./ep/build-velox/src/get_velox.sh
 build-velox: $(VELOX_REPO) build-arrow
+# Force rebuild velox without cleanup
+ifneq "$(VELOX_REPO)" "$(VELOX_REPO_DEFAULT)"
+	-rm $(VELOX_REPO_DEFAULT)/../velox-commit.cache
+endif
 	./ep/build-velox/src/build_velox.sh \
 		--velox_home="$(abspath $(VELOX_REPO))" \
 		--enable_s3=ON \
