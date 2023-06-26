@@ -36,6 +36,7 @@ DOCKER_BUILDER_RUN_FLAGS = $(DOCKER_RUN_FLAGS) \
 	-v $(MAVEN_M2_DIR):/home/build/.m2 \
 	-v $(CCACHE_DIR):/home/build/.ccache \
 	-v $(CURDIR)/docker/builder/Makefile:$(GLUTEN_REPO)/Makefile:ro \
+	-v $(CURDIR)/docker/builder/vcpkg-run:/usr/local/bin/vcpkg-run:ro \
 	--workdir $(GLUTEN_REPO)
 DOCKER_BUILDER_SHELL = docker run --rm -ti $(DOCKER_BUILDER_RUN_FLAGS) $(DOCKER_BUILDER_IMAGE)
 

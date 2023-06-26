@@ -34,7 +34,7 @@ endif
 # Gluten Velox Backend (Shared Library)
 .PHONY: build-gluten-velox clean-gluten-velox
 cpp/build:
-	cmake \
+	vcpkg-run cmake \
 		"-B$@" \
 		-DVELOX_HOME=$(abspath $(VELOX_REPO)) \
 		-DBUILD_VELOX_BACKEND=ON \
@@ -49,7 +49,7 @@ cpp/build:
 		-DENABLE_HDFS=ON \
 		cpp
 build-gluten-velox: build-velox | cpp/build
-	$(DOCKER_BUILDER_SHELL) cmake --build "cpp/build" -j
+	vcpkg-run cmake --build "cpp/build" -j
 clean-gluten-velox:
 	-rm -rf cpp/build
 
@@ -63,7 +63,7 @@ ifneq "$(VELOX_REPO)" "$(VELOX_REPO_DEFAULT)"
 	-rm $(VELOX_REPO_DEFAULT)/../velox-commit.cache
 	mkdir -p $(VELOX_REPO_DEFAULT)
 endif
-	./ep/build-velox/src/build_velox.sh \
+	vcpkg-run ./ep/build-velox/src/build_velox.sh \
 		--velox_home="$(abspath $(VELOX_REPO))" \
 		--enable_s3=ON \
 		--enable_hdfs=ON \
@@ -76,9 +76,9 @@ clean-velox: $(VELOX_REPO)
 # Arrow EP
 .PHONY: build-arrow clean-arrow
 build-arrow:
-	./ep/build-arrow/src/get_arrow.sh \
+	vcpkg-run ./ep/build-arrow/src/get_arrow.sh \
 		--enable_custom_codec=ON
-	./ep/build-arrow/src/build_arrow.sh \
+	vcpkg-run ./ep/build-arrow/src/build_arrow.sh \
 		--build_type=Release \
 		--build_tests=ON \
 		--build_benchmarks=ON \
