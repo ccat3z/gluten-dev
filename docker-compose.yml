@@ -48,3 +48,8 @@ volumes:
   zookeeper-data:
   krb5:
   ha-name-dir-shared:
+
+networks:
+  default:
+    name: test-hadoop
+    driver: bridge
