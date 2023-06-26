@@ -1,11 +1,11 @@
-.PHONY: all .env redeploy
+.PHONY: all redeploy
 
 all:
 
-.env:
+.env: .env.gen
 	./.env.gen > $@
 
-redeploy: | .env
+redeploy: .env
 	docker compose down -v
 	docker compose up -d --build
 
