@@ -59,3 +59,14 @@ builder-image: $(GLUTEN_REPO)
 
 $(CCACHE_DIR) $(VCPKG_BINARY_CACHE_DIR) $(MAVEN_M2_DIR): %:
 	mkdir -p $@
+
+#
+# Editor
+#
+
+.PHONY: gen-clangd 
+gen-clangd: $(GLUTEN_REPO)/cpp/.clangd $(VELOX_REPO)/.clangd
+$(GLUTEN_REPO)/cpp/.clangd: Makefile .clangd.gen
+	CMAKE_BUILD_DIR=build ./.clangd.gen > $@
+$(VELOX_REPO)/.clangd: Makefile .clangd.gen
+	CMAKE_BUILD_DIR=_build/debug ./.clangd.gen > $@

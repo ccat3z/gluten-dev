@@ -1,0 +1,12 @@
+#! /bin/sh
+
+set -exu
+JAVAC=$(which javac)
+JAVA_INCLUDE_DIR=$(realpath -m "$(realpath "$JAVAC")/../../include")
+
+cat <<EOF
+CompileFlags:
+    CompilationDatabase: $CMAKE_BUILD_DIR
+    Compiler: g++
+    Add: [-ferror-limit=0, -I$JAVA_INCLUDE_DIR, -I$JAVA_INCLUDE_DIR/linux]
+EOF
