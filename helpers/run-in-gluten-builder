@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+CURDIR="$PWD"
+cd "$(dirname "$0")/.."
+
+if [ -n "$@" ]; then
+    COMMAND=(bash -l)
+else
+    COMMAND=("$@")
+fi
+
+set -ex
+exec docker compose exec \
+    --user "$(id -u)" \
+    --workdir "$CURDIR" \
+    builder \
+    "${COMMAND[@]}"

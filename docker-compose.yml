@@ -1,4 +1,22 @@
+name: gluten
 services:
+  builder:
+    build:
+      context: ${GLUTEN_REPO}/dev/vcpkg
+      dockerfile: ${DEV_REPO}/docker/builder/Dockerfile
+      ulimits:
+        nofile: 1024000
+    volumes:
+      - ${GLUTEN_REPO}:${GLUTEN_REPO}
+      - ${VELOX_REPO}:${VELOX_REPO}
+      - ./docker/builder/Makefile:${GLUTEN_REPO}/Makefile:ro
+      - ./docker/builder/vcpkg-run:/usr/local/bin/vcpkg-run:ro
+      - ./home:/home/builder
+    working_dir: ${GLUTEN_REPO}
+    init: true
+    environment:
+      BUILDER_UID: ${UID}
+      BUILDER_GID: ${GID}
   krb5kdc:
     build:
       context: docker/kdc
@@ -11,38 +29,24 @@ services:
     init: true
     volumes:
       - zookeeper-data:/tmp/zookeeper
-  hadoop1: &hadoop
+  hadoop: &hadoop
     build:
       context: docker/hadoop
-      args:
-        HDFS_UID: ${UID}
-        HDFS_GID: ${GID}
     init: true
-    hostname: hadoop1
     privileged: true
     environment:
       KRB5_CONFIG: /etc/krb5/krb5.conf
+      HDFS_UID: ${UID}
+      HDFS_GID: ${GID}
     volumes:
       - krb5:/etc/krb5
       - ha-name-dir-shared:/var/lib/hadoop/ha-name-dir-shared
       - ./hadoop-etc:/opt/hadoop/etc/hadoop:ro
       - ./workspace:/home/hdfs/workspace
     working_dir: /home/hdfs/workspace
-  hadoop2:
-    <<: *hadoop
-    hostname: hadoop2
-  hadoop3:
-    <<: *hadoop
-    hostname: hadoop3
-  hadoop4:
-    <<: *hadoop
-    hostname: hadoop4
-  hadoop5:
-    <<: *hadoop
-    hostname: hadoop5
-  hadoop6:
-    <<: *hadoop
-    hostname: hadoop6
+    deploy:
+      mode: replicated
+      replicas: 6
 
 volumes:
   zookeeper-data:

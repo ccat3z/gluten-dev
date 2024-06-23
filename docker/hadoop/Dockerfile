@@ -24,7 +24,7 @@ RUN echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 RUN yum -y install apache-commons-daemon-jsvc
 
 # hadoop
-ENV HADOOP_VERSION=3.3.4
+ENV HADOOP_VERSION=3.4.0
 RUN curl -L https://dlcdn.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz | tar -zx -f- -C /opt \
     && mv /opt/hadoop-$HADOOP_VERSION /opt/hadoop
 ENV HADOOP_HOME=/opt/hadoop
@@ -32,19 +32,9 @@ ENV PATH=$HADOOP_HOME/bin:$PATH
 ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 
-ARG HDFS_UID
-ARG HDFS_GID
-RUN groupadd -g ${HDFS_GID} hdfs
-RUN useradd -m -u ${HDFS_UID} -g hdfs -G wheel hdfs
-RUN chown -R hdfs:hdfs /opt/hadoop
-
 COPY init.sh /init.sh
 COPY ssh /root/.ssh
-COPY ssh /home/hdfs/.ssh
-RUN chown -R hdfs:hdfs /home/hdfs/.ssh
-
 COPY limits-nproc.conf /etc/security/limits.d/20-nproc.conf
-
 RUN ln -sf /etc/krb5/krb5.conf /etc/krb5.conf
 
 CMD /init.sh

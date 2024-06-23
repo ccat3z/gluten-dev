@@ -7,8 +7,9 @@ RUN apt-get update && \
     && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget -O- https://dlcdn.apache.org/zookeeper/zookeeper-3.8.1/apache-zookeeper-3.8.1-bin.tar.gz | tar -zx -f- -C /opt \
-    && mv /opt/apache-zookeeper-3.8.1-bin /opt/zookeeper
+ARG ZOOKEEPER_VERSION=3.9.2
+RUN wget -O- https://dlcdn.apache.org/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz | tar -zx -f- -C /opt \
+    && mv /opt/apache-zookeeper-${ZOOKEEPER_VERSION}-bin /opt/zookeeper
 
 ENV PATH=/opt/zookeeper/bin:$PATH
 COPY zoo.cfg /opt/zookeeper/conf/zoo.cfg
